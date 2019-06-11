@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<script type="text/javascript" src="easyui/jquery.min.js">
+	</script>
+	<script type="text/javascript" src="easyui/jquery.easyui.min.js">
+	</script>
+	<meta charset="utf-8">
+	<style type="text/css">
+		#fm{
+			margin-top: 50px;
+			margin-left: 300px;
+		}
+		input{margin-bottom: 15px;}
+		select{margin-bottom: 15px;}
+		#p1{margin-bottom:15px;}
+	</style>
+</head>
+<body>
+	<div class="easyui-panel" title="开课申请" style="width: 100%;height: 350px;" id="p1">
+		<form id="fm" method="post">
+			<label>课程类别：</label>
+			<select name="Course_leibie" id="in1">
+				<option value="社会科学">社会科学</option>
+				<option value="人文科学">人文科学</option>
+				<option value="自然科学">自然科学</option>
+				<option value="工科类">工科类</option>
+			</select><br>
+			<label>课程名称：</label>
+			<input type="text" name="Course_name" id="in2"><span>*</span><br>
+			<label>课程学时：</label>
+			<input type="text" name="Course_hour" id="in3"><span>*</span><br>
+			<label>课程学分：</label>
+			<input type="text" name="Course_credit" id="in4"><span>*</span><br>
+			<label>课程人数：</label>
+			<input type="text" name="Course_number" id="in5"><span>*</span><br>
+			<a href="#" class="easyui-linkbutton" id="a1">提交</a>
+		</form>
+	</div>
+	<div class="easyui-panel" title="申请查询" style="width: 99%;height: 300px;">
+		<table class="easyui-datagrid" style="width: 100%;height: 200px;" toolbar='#tb' rownumbers="true" fitColumus="true" singleSelect="true" id="dg" url="class_query.php">
+		<thead>
+			<tr>
+				<th field="Cno" width="80" align="center">课程号</th>
+				<th field="Course_leibie" width="80" align="center">课程类别</th>
+				<th field="Course_name" width="100" align="center">课程名称</th>
+				<th field="Course_hour" width="50" align="center">学时</th>
+				<th field="Course_credit" width="50" align="center">学分</th>
+				<th field="Ename" width="80" align="center">任课老师</th>
+				<th field="Course_number" width="80" align="center">可选人数</th>
+				<th field="Status" width="80" align="center">处理状态</th>
+				<th field="liyou" width="220" align="center">拒绝原因</th>
+				<th field="admin" width="80" align="center">处理人</th>
+				<th field="time" width="150" align="center">处理时间</th>
+			</tr>
+		</thead>		
+	</table>
+	</div>
+</body>
+	<script type="text/javascript">
+		$('#a1').click(function(){
+			$.post("class_open.php",
+				{
+				Course_leibie:$('#in1').val(),
+		 		Course_name:$('#in2').val(),
+		 		Course_hour:$('#in3').val(),
+		 		Course_credit:$('#in4').val(),
+		 		Course_number:$('#in5').val()
+			},
+			function(data,status){
+				alert("Data: " + data + "\nStatus: " + status);
+				$("#in1").val("社会科学");
+				$("#in2").val("");
+				$("#in3").val("");
+				$("#in4").val("");
+				$("#in5").val("");
+				$('#dg').datagrid('load');
+			});
+		});
+	</script>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<script type="text/javascript" src="easyui/jquery.min.js">
+	</script>
+	<script type="text/javascript" src="easyui/jquery.easyui.min.js">
+	</script>
+	<meta charset="utf-8">
+	<style type="text/css">
+		label{width: 100px;display: block;}
+		#fm{margin-left: 50px;margin-top: 20px;}
+		input{margin-bottom: 20px;}
+		#a1{margin-left: 60px;}
+	</style>
+	<div class="easyui-panel" title="修改密码" style="width: 600px;height: 480px;">
+		<form id="fm" method="post">
+			<label>旧密码：</label>
+			<input type="text" name="Epass" id="in1"><span>*</span><br>
+			<label>新密码：</label>
+			<input type="text" name="Epass1" id="in2"><span>*</span><br>
+			<label>确认密码：</label>
+			<input type="text" name="Epass2" id="in3" onkeyup="tishi()"><span id="s1">*</span><br>
+			<a href="#" class="easyui-linkbutton" id="a1">提交</a>
+		</form>
+	</div>
+</body>
+	<script type="text/javascript">
+		function tishi(){
+			var p1=$('#in2').val();
+			var p2=$('#in3').val();
+			if (p1!=p2) {
+				$('#s1').html('两次密码不一致');
+				$('#s1').css('color','red');
+			}else{
+				$('#s1').html('两次密码相同');
+				$('#s1').css('color','black');
+			}
+		}
+		$('#a1').click(function(){
+			$.post("t_mm.php",
+			{
+				Epass:$('#in1').val(),
+				Epass1:$('#in2').val()
+			},
+			function(data){
+				alert("Data: " + data);
+			});
+		});
+	</script>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<script type="text/javascript" src="easyui/jquery.min.js">
+	</script>
+	<script type="text/javascript" src="easyui/jquery.easyui.min.js">
+	</script>
+	<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+	<table class="easyui-datagrid" style="width: 550px;height: 350px;" pagination="true" toolbar='#tb' rownumbers="true" fitColumus="true" singleSelect="true" id="dg" url="t_query.php">
+		<thead>
+			<tr>
+				<th field="Eno" width="80">职工号</th>
+				<th field="Ename" width="80">姓名</th>
+				<th field="Esex" width="80">性别</th>
+				<th field="Eage" width="80">年龄</th>
+				<th field="Epass" width="80">密码</th>
+			</tr>
+		</thead>		
+	</table>
+	<div id="tb">
+		<a href="#" class="easyui-linkbutton" iconCls='icon-add' plain="true" onclick="newUser()">添加</a>
+		<a href="#" class="easyui-linkbutton" iconCls='icon-edit' plain="true" onclick="editUser()">编辑</a>
+		<a href="#" class="easyui-linkbutton" iconCls='icon-remove' plain="true" onclick="destroyUser()">删除</a>
+	</div>
+	<div id="dlg" class="easyui-dialog" close:"true" buttons="#dlg-buttons" style="width: 400px;height: 280px;" title="新用户" data-options='closed:true'>
+		<form id="fm" method="post">
+			<div class="fitem">
+				<label>工号：</label>
+				<input name="Eno" class="easyui-validatebox" required="true">
+			</div>
+			<div class="fitem">
+				<label>姓名：</label>
+				<input name="Ename" class="easyui-validatebox" required="true">
+			</div>
+			<div class="fitem">
+				<label>性别：</label>
+				<input name="Esex" class="easyui-validatebox" required="true">
+			</div>
+			<div class="fitem">
+				<label>年龄：</label>
+				<input name="Eage" class="easyui-validatebox" required="true">
+			</div>
+			<div class="fitem">
+				<label>密码：</label>
+				<input name="Epass" class="easyui-validatebox" required="true">
+			</div>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveUser()" type="submit">保存</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+	</div>
+</body>
+	<style type="text/css">
+		.fitem{
+			margin-left: 40px;
+			margin-top: 10px;
+		}
+	</style>
+	<script type="text/javascript">
+		var url;
+		function newUser(){
+			$('#dlg').dialog('open').dialog('center').dialog('setTitle','New User');
+			$('#fm').form('clear');
+			url = 'save_Tuser.php';
+		}
+		function editUser(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$('#dlg').dialog('open').dialog('center').dialog('setTitle','Edit User');
+				$('#fm').form('load',row);
+				url = 'update_Tuser.php?Eno='+row.Eno;
+			}else{
+				alert('请选择要编辑的行！');
+			}
+		}
+		function saveUser(){
+			$('#fm').form('submit',{
+				url: url,
+				onSubmit: function(){
+					return $(this).form('validate');
+				},
+				success: function(){
+						$('#dlg').dialog('close');		// close the dialog
+						$('#dg').datagrid('reload');	// reload the user data
+					}
+				
+			});
+		}
+		function destroyUser(){
+			var row = $('#dg').datagrid('getSelected');
+			if (row){
+				$.messager.confirm('温馨提示','你确定要删除这个用户吗？',function(r){
+					if (r){
+						$.post('destroy_Tuser.php',{Eno:row.Eno},function(result){
+							if (result.success){
+								$('#dg').datagrid('reload');	// reload the user data
+							} else {
+								$.messager.show({	// show error message
+									title: 'Error',
+									msg: result.errorMsg
+								});
+							}
+						},'json');
+					}
+				});
+			}else{
+				alert('请选择要删除的行！');
+			}
+		}
+	</script>
+</html>

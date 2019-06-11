@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="easyui/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="easyui/themes/icon.css">
+	<script type="text/javascript" src="easyui/jquery.min.js">
+	</script>
+	<script type="text/javascript" src="easyui/jquery.easyui.min.js">
+	</script>
+	<script type="text/javascript" src="easyui/locale/easyui-lang-zh_CN.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<style type="text/css">
+		textarea{margin-left: 90px;}
+	</style>
+</head>
+<body>
+	<table class="easyui-datagrid" style="width:755px;height: 400px;" pagination="true" toolbar='#tb' rownumbers="true" fitColumus="true" singleSelect="true" id="dg" url="Course_shenghe.php">
+		<thead>
+			<tr>
+				<th field="Course_leibie" width="80" align="center">课程类别</th>
+				<th field="Course_name" width="110" align="center">课程名称</th>
+				<th field="Course_hour" width="60" align="center">课程学时</th>
+				<th field="Course_credit" width="60" align="center">课程学分</th>
+				<th field="Ename" width="80" align="center">任课老师</th>
+				<th field="Course_number" width="90" align="center">课程人数</th>
+				<th field="Status" width="100" align="center">状态</th>
+				<th field="caozuo" width="120" data-options="formatter:editDelete" halign="center">操作</th>
+			</tr>
+		</thead>		
+	</table>
+		<div id="dlg" class="easyui-dialog" close:"true" buttons="#dlg-buttons" style="width: 400px;height: 280px;" title="请输入拒绝的理由" data-options='closed:true'>
+		<form id="fm" method="post">
+			<div class="fitem">
+				<label>内容：</label><br>
+				<textarea style="width: 200px;height: 150px;" id="text1"></textarea>
+			</div>
+		</form>
+	</div>
+	<div id="dlg-buttons">
+		<a href="#" class="easyui-linkbutton" iconCls="icon-ok" onclick="chuli()" type="submit">保存</a>
+		<a href="#" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">取消</a>
+	</div>
+</body>
+	<script type="text/javascript">
+		function editDelete(val,row,index){
+			return '<a href="#" id="a1" onclick="Agree()">同意</a><a href="#" id="a1" onclick="refuse()">拒绝</a>';
+		}
+		function Agree(){
+			var rs = $('#dg').datagrid('getSelected');
+			if (rs) {
+				$.post("Agree.php",
+					{
+						Course_name:rs.Course_name
+					},
+				function(data,status){
+					 alert("Data: " + data);
+					 $('#dg').datagrid('reload');
+					 $('#dg1').datagrid('reload');	 
+				});
+			}
+		}	
+		function refuse(){
+			var rs = $('#dg').datagrid('getSelected');
+			if (rs){
+				$.messager.confirm('温馨提示','你确定要拒绝吗？',
+					function(r){
+						if (r){
+								$.post("refuse.php",
+						{
+							Course_name:rs.Course_name
+						},
+						function(data,status){
+							 alert("Data: " + data);
+							 $('#dg').datagrid('reload');
+							 $('#dlg').dialog('open');
+						});
+								}
+						});
+			}
+		}	
+		function chuli(){
+			$.post("liyou.php",
+				{
+					liyou:$("#text1").val(),
+				},
+				function(data,status){
+					alert("Data: " + data + "\nStatus: " + status);
+					$('#dlg').dialog('close');
+					});
+		}
+	</script>
+	<style type="text/css">
+		#a1{
+			display: block;
+			text-decoration: none;
+			float: left;
+			color: black;
+			width: 54px;text-align: center;
+			background:#e8e8ef;
+			margin-left: 1px;
+			height: 22px;
+			line-height: 22px;
+			border-radius: 7px;
+		}
+		#a1:hover{
+			background:#c6c6de;
+		}
+	</style>
+</html>
